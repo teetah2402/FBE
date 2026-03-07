@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowork Master Hub - App Manager</title>
+    <style>
+        /* Flowork OS Premium Variables (DARK MODE DEFAULT) */
+        :root {
+            --bg-core: #121216;
+            --bg-panel: #1e1e23;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --brand-green: #3DDC84;
+            --accent-cyan: #00BBF9;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --danger: #FF006E;
+        }
+
+        /* LIGHT MODE VARIABLES */
+        html[data-theme="light"] {
+            --bg-core: #f0f4f8;
+            --bg-panel: #ffffff;
+            --bg-card: #f8fafc;
+            --text-main: #1e1b4b;
+            --text-muted: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --brand-green: #059669;
+            --accent-cyan: #0284c7;
+        }
+
+        body {
+            margin: 0; padding: 0; background: var(--bg-core); color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px; background: var(--bg-panel); border-right: 1px solid var(--border-color);
+            padding: 20px; display: flex; flex-direction: column; overflow-y: auto; transition: 0.3s;
+        }
+        .brand { font-size: 20px; font-weight: 800; color: var(--brand-green); margin-bottom: 30px; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;}
+        .brand span { color: var(--accent-cyan); }
+        .nav-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin: 15px 0 10px; }
+        .nav-item {
+            padding: 10px 15px; border-radius: 8px; cursor: pointer; color: var(--text-main);
+            font-weight: 600; font-size: 14px; margin-bottom: 5px; transition: 0.2s; display: flex; align-items: center; gap: 10px;
+        }
+        .nav-item:hover { background: rgba(128,128,128,0.1); }
+        .nav-item.active { background: rgba(61, 220, 132, 0.15); color: var(--brand-green); border-left: 3px solid var(--brand-green); }
+
+        /* MAIN CONTENT */
+        .main-content { flex: 1; display: flex; flex-direction: column; background: var(--bg-core); transition: 0.3s; }
+
+        /* TOP BAR */
+        .topbar {
+            height: 70px; border-bottom: 1px solid var(--border-color); display: flex;
+            align-items: center; justify-content: space-between; padding: 0 30px; background: var(--bg-panel); transition: 0.3s;
+        }
+        .search-box input {
+            background: rgba(128,128,128,0.1); border: 1px solid var(--border-color); color: var(--text-main);
+            padding: 10px 20px; border-radius: 20px; width: 350px; font-size: 14px; outline: none; transition: 0.3s;
+        }
+        .search-box input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0, 187, 249, 0.2); }
+        .status-badge { background: rgba(0, 187, 249, 0.1); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+
+        /* APP GRID */
+        .board-container { padding: 30px; overflow-y: auto; flex: 1; }
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
+
+        /* APP CARD BASE */
+        .app-card {
+            border-radius: 16px; padding: 20px; transition: 0.4s all cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; display: flex; flex-direction: column; gap: 12px;
+        }
+
+        /* Highlight untuk App Native Extensi */
+        .app-card.highlight-native {
+            background: linear-gradient(145deg, rgba(61, 220, 132, 0.12) 0%, rgba(0, 187, 249, 0.05) 100%);
+            border: 2px solid var(--brand-green);
+            box-shadow: 0 6px 20px rgba(61, 220, 132, 0.15);
+        }
+        .app-card.highlight-native:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--brand-green);
+            box-shadow: 0 12px 30px rgba(61, 220, 132, 0.3);
+        }
+        html[data-theme="light"] .app-card.highlight-native {
+            background: linear-gradient(145deg, rgba(5, 150, 105, 0.1) 0%, rgba(2, 132, 199, 0.05) 100%);
+        }
+
+        /* Style untuk App Non-Native (Mati / Dimmed) */
+        .app-card.dimmed-app {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            opacity: 0.45;
+            filter: grayscale(85%);
+        }
+        .app-card.dimmed-app:hover {
+            transform: translateY(-3px);
+            opacity: 1;
+            filter: grayscale(0%);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-header { display: flex; align-items: flex-start; justify-content: space-between; }
+        .app-icon { width: 48px; height: 48px; background: rgba(128,128,128,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .app-title { font-size: 16px; font-weight: 700; margin: 10px 0 5px; color: var(--text-main);}
+        .app-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; flex: 1; }
+
+        /* TOGGLE SWITCH */
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(128,128,128,0.3); transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: #fff; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: rgba(61, 220, 132, 0.2); border: 1px solid var(--brand-green); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: var(--brand-green); box-shadow: 0 0 10px var(--brand-green); }
+
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 12px; }
+        .category-tag { font-size: 10px; background: rgba(128,128,128,0.1); padding: 4px 8px; border-radius: 6px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); }
+
+        .btn-settings { background: none; border: none; color: var(--text-muted); cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 11px;}
+        .btn-settings:hover { color: var(--accent-cyan); }
+        .btn-launch { background: rgba(0, 187, 249, 0.15); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 5px 12px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: bold; transition: 0.2s; }
+        .btn-launch:hover { background: var(--accent-cyan); color: #fff; box-shadow: 0 0 10px rgba(0, 187, 249, 0.4); }
+
+        /* MODAL LICENSE */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px); transition: 0.3s; }
+        .modal-box { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; width: 380px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+
+        #btn-clear-cache:hover {
+            background: rgba(255, 0, 110, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="36" height="36">
+              <defs>
+                <linearGradient id="core_grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#2d2f45"/><stop offset="50%" stop-color="#706bf3"/><stop offset="100%" stop-color="#54d7f6"/>
+                </linearGradient>
+                <filter id="spinner_glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+                  <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 3 -1" result="brightBlur"/>
+                  <feMerge><feMergeNode in="brightBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <circle id="ring_outer" cx="256" cy="256" r="230" fill="none" stroke="#54d7f6" stroke-width="8" stroke-linecap="round" stroke-dasharray="200 150 50 150" filter="url(#spinner_glow)">
+                   <animateTransform attributeName="transform" type="rotate" from="0 256 256" to="360 256 256" dur="3s" repeatCount="indefinite" additive="sum"/>
+                </circle>
+                <circle id="ring_inner" cx="256" cy="256" r="200" fill="none" stroke="#706bf3" stroke-width="10" stroke-linecap="round" stroke-dasharray="100 80 30 80 100 80" filter="url(#spinner_glow)" opacity="0.8">
+                   <animateTransform attributeName="transform" type="rotate" from="360 256 256" to="0 256 256" dur="2.5s" repeatCount="indefinite" additive="sum"/>
+                </circle>
+                <circle cx="256" cy="26" r="6" fill="#ffffff" filter="url(#spinner_glow)">
+                    <animateTransform attributeName="transform" type="rotate" from="0 256 256" to="360 256 256" dur="3s" repeatCount="indefinite"/>
+                 </circle>
+              </defs>
+              <use href="#ring_outer"/>
+              <use href="#ring_inner"/>
+              <g transform="translate(102, 102) scale(0.6)">
+                <path d="M100 80 L 220 80 L 220 200 L 160 200 L 160 432 L 100 432 Z" fill="url(#core_grad)" stroke="#3a3962" stroke-width="4"/>
+                <path d="M260 80 L 412 80 L 412 180 L 260 180 Z" fill="#54d7f6" opacity="0.9"/>
+                <path d="M260 220 L 360 220 L 360 320 L 260 320 Z" fill="#706bf3" opacity="0.9"/>
+                <path d="M220 130 L 260 130" stroke="#ffd700" stroke-width="8" stroke-linecap="round"/>
+                <path d="M220 270 L 260 270" stroke="#ffd700" stroke-width="8" stroke-linecap="round"/>
+              </g>
+            </svg>
+            <div>Flowork <span>Hub</span></div>
+        </div>
+
+        <div class="nav-label" data-i18n="navLib">Library</div>
+        <div class="nav-item active" data-category="all"><span data-i18n="navAll">📦 All Applications</span></div>
+        <div class="nav-item" data-category="active"><span data-i18n="navActive">🌟 Active Modules</span></div>
+
+        <div class="nav-label" data-i18n="navCat">Categories</div>
+        <div id="dynamic-categories"></div>
+
+        <div style="margin-top: auto;">
+            <div class="nav-label" data-i18n="navSys">System</div>
+            <div class="nav-item" id="btn-lang" style="border: 1px solid var(--border-color); justify-content: center; margin-bottom: 8px;" data-i18n="btnLang">🇮🇩 ID</div>
+            <div class="nav-item" id="btn-theme" style="border: 1px solid var(--border-color); justify-content: center; margin-bottom: 8px;" data-i18n="btnTheme">☀️ Light Mode</div>
+
+            <div class="nav-item" id="btn-autoboot" style="border: 1px solid var(--border-color); justify-content: center; margin-bottom: 8px;">🚀 Auto-Boot: ON</div>
+
+            <div class="nav-item" id="btn-clear-cache" style="border: 1px solid var(--danger); color: var(--danger); justify-content: center; margin-bottom: 15px;" data-i18n="btnClearCache">🗑️ Bersihkan Cache</div>
+
+            <div class="nav-item" data-category="about"><span data-i18n="navAbout">ℹ️ About Us</span></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar" id="topbar-search">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search apps..." data-i18n-placeholder="search">
+            </div>
+            <div class="status-badge" id="active-counter">Loading...</div>
+        </div>
+
+        <div class="board-container">
+            <div class="app-grid" id="app-grid">
+                </div>
+
+            <div id="about-section" style="display: none; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; margin-top: 10px;">
+                <h1 style="color: var(--brand-green); margin-top: 0; font-size: 28px;" data-i18n="aboutTitle">🚀 Flowork OS Bridge</h1>
+                <h3 style="color: var(--accent-cyan); margin-top: 10px; font-size: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;" data-i18n="aboutManifesto">Mengenal Flowork</h3>
+
+                <div style="color: var(--text-muted); font-size: 14.5px; line-height: 1.8; text-align: justify; margin-top: 20px;">
+                    <p data-i18n="aboutP1"></p>
+                    <p data-i18n="aboutP2"></p>
+                    <p data-i18n="aboutP3"></p>
+                    <p data-i18n="aboutP4"></p>
+                    <p data-i18n="aboutP5"></p>
+                </div>
+
+                <div style="margin-top: 50px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; font-size: 13px; font-weight: 600;">
+                    <a href="https://floworkos.com/privacy-policy" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">📄 Privacy Policy</a>
+                    <a href="https://floworkos.com/terms-of-service" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">📝 Terms of Service</a>
+                    <a href="https://floworkos.com/dmca" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">🛡️ DMCA</a>
+                </div>
+
+                <p style="margin-top: 30px; font-size: 12px; color: var(--text-muted); text-align: center; border-top: 1px dashed var(--border-color); padding-top: 20px;">
+                    <span data-i18n="footerRight">© 2026 Flowork Neural Division. All Rights Reserved.</span><br>
+                    <i>System Version 6.0.0</i>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="license-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top:0; color: var(--accent-cyan); display: flex; align-items: center; justify-content: space-between;">
+                <span id="modal-app-name">App Name</span>
+                <span style="font-size: 12px; background: rgba(61, 220, 132, 0.2); color: var(--brand-green); padding: 4px 8px; border-radius: 6px;">VERIFIED</span>
+            </h3>
+            <div style="font-size: 13px; color: var(--text-main); line-height: 2; margin-top: 20px; background: rgba(128,128,128,0.1); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <div style="display: flex; justify-content: space-between;"><span>🔑 License Key:</span> <span style="font-family: monospace; color: var(--brand-green); font-weight: bold;">FLW-V6-LIFETIME</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>📡 Bridge Status:</span> <span>Active (God Mode)</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>🔄 Auto-Update:</span> <span>Enabled</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>🛡️ Telemetry:</span> <span>Disabled (Privacy First)</span></div>
+            </div>
+            <button id="btn-close-license-modal" style="margin-top: 20px; width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--border-color); color: var(--text-main); cursor: pointer; font-weight: bold; transition: 0.2s;">OK, TUTUP</button>
+        </div>
+    </div>
+
+    <div id="update-modal" class="modal-overlay" style="z-index: 99999; backdrop-filter: blur(10px); background: rgba(0,0,0,0.8);">
+        <div class="modal-box" style="border: 2px solid var(--danger); box-shadow: 0 0 30px rgba(255, 0, 110, 0.4);">
+            <h3 style="margin-top:0; color: var(--danger); display: flex; align-items: center; justify-content: space-between;">
+                <span data-i18n="updateTitle">Update Required</span>
+                <span style="font-size: 12px; background: rgba(255, 0, 110, 0.2); color: var(--danger); padding: 4px 8px; border-radius: 6px;">URGENT</span>
+            </h3>
+            <div style="font-size: 13px; color: var(--text-main); line-height: 1.6; margin-top: 15px;">
+                <p data-i18n="updateMsg1">Versi ekstensi Anda sudah usang. Mohon diperbarui untuk melanjutkan.</p>
+                <div style="display: flex; justify-content: space-between; margin-top: 15px; background: rgba(128,128,128,0.1); padding: 12px; border-radius: 8px;">
+                    <span>Current Version:</span> <span id="current-ext-ver" style="font-family: monospace; font-weight: bold; color: var(--text-muted);">1.0.0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px; background: rgba(128,128,128,0.1); padding: 12px; border-radius: 8px;">
+                    <span>Required Version:</span> <span id="required-ext-ver" style="font-family: monospace; font-weight: bold; color: var(--brand-green);">1.0.1</span>
+                </div>
+            </div>
+            <a href="https://floworkos.com/extension" target="_blank" style="box-sizing: border-box; display: block; text-align: center; text-decoration: none; margin-top: 20px; width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--danger); color: #fff; font-weight: bold; transition: 0.2s;">
+                <span data-i18n="btnUpdate">DOWNLOAD UPDATE</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal-overlay" style="z-index: 99998;">
+        <div class="modal-box">
+            <h3 style="margin-top:0; color: var(--brand-green); display: flex; align-items: center; justify-content: space-between;">
+                <span id="modal-settings-title" data-i18n="settingsTitle">App Settings</span>
+                <span style="font-size: 12px; background: rgba(61, 220, 132, 0.2); color: var(--brand-green); padding: 4px 8px; border-radius: 6px;">CONFIG</span>
+            </h3>
+            <div style="font-size: 13px; color: var(--text-main); line-height: 1.6; margin-top: 15px;">
+                <p data-i18n="settingsDesc">Masukkan daftar Gmail Anda (satu per baris) untuk fitur otomatis Gmail Dot Trick.</p>
+                <textarea id="settings-textarea" rows="5" style="width: 100%; box-sizing: border-box; background: rgba(128,128,128,0.1); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px; border-radius: 8px; outline: none; resize: vertical; margin-top: 10px;" placeholder="contoh1@gmail.com&#10;contoh2@gmail.com"></textarea>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button id="btn-close-settings-modal" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main); cursor: pointer; font-weight: bold; transition: 0.2s;">BATAL</button>
+                <button id="btn-save-settings" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: var(--brand-green); color: #1E1B4B; cursor: pointer; font-weight: bold; transition: 0.2s;">SIMPAN</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

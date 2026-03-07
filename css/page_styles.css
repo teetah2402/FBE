@@ -1,0 +1,144 @@
+.sc__39Oges344SCYkYf__ligth
+{
+    color: #f34938!important;
+    position: absolute!important;
+    margin-top:  0!important;
+    background: none!important;
+}
+.sc__39Oges344SCYkYf__ligth:after
+{
+    color: silver!important;
+    /* padding: 2px!important; [KODE LAMA DIMATIKAN] */
+    padding: 1px 3px!important; /* [KODE BARU] Padding lebih tipis */
+    margin: 0!important;
+
+    /* font-size: 13px!important; [KODE LAMA DIMATIKAN] */
+    font-size: 9px!important; /* [KODE BARU] Ukuran font dikecilin biar elegan */
+
+    background:black!important;
+    position: absolute!important;
+
+    /* top: -15px!important; [KODE LAMA DIMATIKAN] */
+    top: -12px!important; /* [KODE BARU] Turunin dikit posisinya */
+
+    /* height: 15px!important; [KODE LAMA DIMATIKAN] */
+    height: 12px!important; /* [KODE BARU] Boks lebih ceper */
+
+    right: 0!important;
+    font-family: sans-serif;
+    font-weight: 700;
+
+    /* line-height: 14px!important; [KODE LAMA DIMATIKAN] */
+    line-height: 12px!important; /* [KODE BARU] */
+
+    text-align: center!important;
+}
+.sc__39Oges344SCYkYf__ligth:before
+{
+    content: ""!important;
+    padding: 2px!important;
+    margin: 0!important;
+    line-height: 9px!important;
+    background:black!important;
+    position: absolute!important;
+    right: 0!important;
+    height: 100%!important;
+    width: 100%!important;
+    top: 0!important;
+    left: 0!important;
+    bottom: 0!important;
+    background: none!important;
+}
+
+.sc__39Oges344SCYkYf__ligth,
+.sc__39Oges344SCYkYf__img_wrap {
+    /* font-size: 13px!important; [KODE LAMA DIMATIKAN] */
+    font-size: 10px!important; /* [KODE BARU] */
+}
+
+.sc__39Oges344SCYkYf__ligth
+{
+    border: 1px dotted #f34938!important;
+    width: 100%!important;
+    height: 100%!important;
+    top: 0!important;
+    left: 0!important;
+}
+
+.sc__39Oges344SCYkYf_add_class {
+    position: relative!important;
+}
+
+
+.sc__39Oges344SCYkYf__img_wrap {
+    position: relative!important;
+    /*height: 0!important;*/
+    display: block!important;
+}
+
+.sc__39Oges344SCYkYf__img_wrap[data-size]:before {
+    content: attr(data-size)!important;
+    display: block!important;
+    color: red!important;
+    position: absolute!important;
+    z-index: 999999!important;
+
+    /* width: 65px!important; [KODE LAMA DIMATIKAN] */
+    width: 40px!important; /* [KODE BARU] Kotak KB gambar dikecilin */
+
+    right: 1px !important;
+    top: 4px !important;
+    background: black!important;
+    border-radius: 3px!important; /* [KODE BARU] Radius dihalusin */
+    text-align: center!important;
+    font-family: sans-serif;
+
+    /* font-size: default; [KODE LAMA DIMATIKAN] */
+    font-size: 9px!important; /* [KODE BARU] */
+
+    font-weight: 700;
+
+    /* line-height: 14px!important; [KODE LAMA DIMATIKAN] */
+    line-height: 12px!important; /* [KODE BARU] */
+
+    margin: 0 auto;
+    left: 0!important;
+
+}
+
+.sitechecker_asdddg_aaqaa_ligth_big_img {
+    border: 1px dotted #f34938!important;
+}
+
+h1 > .sc__39Oges344SCYkYf__ligth:after {
+    content: "H1"!important;
+}
+
+a > .sc__39Oges344SCYkYf__links_nf.sc__39Oges344SCYkYf__ligth:after {
+    content: "nofollow"!important;
+    /* width: 67px!important; [KODE LAMA DIMATIKAN] */
+    width: 45px!important; /* [KODE BARU] */
+}
+a > .sc__39Oges344SCYkYf__links_df.sc__39Oges344SCYkYf__ligth:after {
+    content: "dofollow"!important;
+    /* width: 67px!important; [KODE LAMA DIMATIKAN] */
+    width: 45px!important; /* [KODE BARU] */
+}
+
+h2 > .sc__39Oges344SCYkYf__ligth:after {
+    content: "H2"!important;
+}
+
+h3 > .sc__39Oges344SCYkYf__ligth:after {
+    content: "H3"!important;
+}
+
+h4 > .sc__39Oges344SCYkYf__ligth:after {
+    content: "H4"!important;
+}
+h5 > .sc__39Oges344SCYkYf__ligth:after {
+    content: "H5"!important;
+}
+h6 > .sc__39Oges344SCYkYf__ligth:after {
+    content: "H6"!important;
+}
