@@ -1,0 +1,43 @@
+{
+  "name": "Flowork OS Bridge",
+  "version": "1.0.1",
+  "manifest_version": 3,
+ "description": "Native System Bridge to connect Flowork Web OS with Core Browser APIs.",
+  "permissions": [
+    "tabs", "storage", "bookmarks", "history", "cookies", "downloads", "scripting", "contextMenus"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "matches": [
+      "http://localhost:5173/*",
+      "http://127.0.0.1:5173/*",
+      "https://*.floworkos.com/*"
+    ]
+  },
+  "action": {
+    "default_title": "Open Flowork Hub",
+    "default_icon": "icon16.png"
+  },
+  "options_page": "dashboard.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "http://localhost:5173/*",
+        "http://127.0.0.1:5173/*",
+        "https://*.floworkos.com/*"
+      ],
+      "js": ["content_injector.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
